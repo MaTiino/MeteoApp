@@ -58,6 +58,8 @@ MeteoApp to prosta, ale w pełni funkcjonalna aplikacja pogodowa, która pozwala
     ```
 3.  Zsynchronizuj projekt z platformą natywną:
     ```bash
+    ionic capacitor sync android
+    ```
 4.  Otwórz projekt w Android Studio:
     ```bash
     ionic capacitor open android
