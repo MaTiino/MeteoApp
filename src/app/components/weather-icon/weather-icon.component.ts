@@ -23,6 +23,12 @@ export class WeatherIconComponent implements OnChanges {
   private getIconName(code: number, isDay: boolean | number, isDaily: boolean): string {
     const isDayTime = isDay === 1 || isDay === true;
 
+    // For the daily forecast summary, we want a simpler, more optimistic icon.
+    // Codes 0, 1, and 2 (Clear, Mainly Clear, Partly Cloudy) should all be considered "Sunny".
+    if (isDaily) {
+      if (code >= 0 && code <= 2) return 'sunny-outline';
+    }
+
     switch (code) {
       case 0: // Clear sky
         return isDayTime ? 'sunny-outline' : 'moon-outline';
