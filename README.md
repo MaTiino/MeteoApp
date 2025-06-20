@@ -17,6 +17,15 @@ MeteoApp to prosta, ale w pełni funkcjonalna aplikacja pogodowa, która pozwala
 *   **Tryb jasny i ciemny:** Interfejs automatycznie dostosowuje się do motywu systemowego.
 *   **Natywny wygląd i działanie:** Dzięki Capacitor, aplikacja integruje się z natywnymi funkcjami urządzenia, takimi jak geolokalizacja i pasek statusu.
 
+## Kluczowe usprawnienia i poprawki
+
+Projekt przeszedł przez intensywny proces debugowania i refaktoryzacji, który znacząco poprawił jego jakość i niezawodność:
+
+*   **Inteligentne ikony pogody:** Logika wyświetlania ikon została gruntownie przebudowana. Aplikacja teraz trafniej interpretuje dane z API, rozróżniając kody pogodowe w zależności od kontekstu (np. prognoza dzienna vs. pogoda na teraz). Dzięki temu ikony lepiej oddają rzeczywiste warunki, unikając pokazywania zachmurzenia w słoneczny dzień z powodu chwilowych zmian.
+*   **Poprawki w geolokalizacji:** Usunięto błąd powodujący wyświetlanie nieprawidłowych danych pogodowych z powodu na stałe przypisanej strefy czasowej. Aplikacja dynamicznie dostosowuje strefę czasową do lokalizacji urządzenia.
+*   **Reaktywne wyszukiwanie:** Mechanizm wyszukiwania miast został zoptymalizowany przy użyciu `RxJS`, co zapewnia płynne i wydajne działanie interfejsu podczas wpisywania zapytań.
+*   **Rozwiązanie problemów z trybem ciemnym:** Naprawiono błędy w wyświetlaniu stylów w trybie ciemnym, które były spowodowane enkapsulacją Shadow DOM, zapewniając spójny wygląd na wszystkich platformach.
+
 ## Technologie
 
 *   **Ionic Framework** - UI toolkit do budowy wysokiej jakości aplikacji mobilnych i desktopowych.

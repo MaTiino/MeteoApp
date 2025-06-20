@@ -4,7 +4,7 @@
       MeteoApp
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="loadWeather()">
+      <ion-button (click)="loadWeatherForCurrentLocation()">
         <ion-icon slot="icon-only" name="location"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -19,7 +19,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" [class.content-dark-mode]="isDarkMode">
   <ion-list *ngIf="searchResults.length > 0">
     <ion-item button *ngFor="let city of searchResults" (click)="selectCity(city)">
       <ion-label>
@@ -38,24 +38,78 @@
   <ng-container *ngIf="weatherData$ | async as weather">
     <ion-card #weatherCard class="ion-text-center ion-padding" style="opacity: 0">
       <ion-card-header>
-        <ion-card-title>{{ locationName }}</ion-card-title>
-        <ion-card-subtitle>Aktualna pogoda</ion-card-subtitle>
+        <ion-card-subtitle>{{ cityName }}</ion-card-subtitle>
+        <ion-card-title *ngIf="weather.current" class="ion-text-center current-temp">
+          <app-weather-icon [weatherCode]="weather.current.weather_code" [isDay]="weather.current.is_day" class="weather-icon-large"></app-weather-icon>
+          {{ weather.current.temperature_2m | number:'1.0-0' }}°C
+        </ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <h1 class="temperature">{{ weather.current.temperature_2m }}°C</h1>
-        <app-weather-icon [weatherCode]="weather.current.weather_code"></app-weather-icon>
+        <ion-list lines="none" *ngIf="weather.current" class="current-details">
+          <ion-item>
+            <ion-icon name="thermometer-outline" slot="start"></ion-icon>
+            <ion-label>Odczuwalna</ion-label>
+            <ion-text slot="end">{{ weather.current.apparent_temperature | number:'1.0-0' }}°C</ion-text>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="water-outline" slot="start"></ion-icon>
+            <ion-label>Wilgotność</ion-label>
+            <ion-text slot="end">{{ weather.current.relative_humidity_2m }}%</ion-text>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="rainy-outline" slot="start"></ion-icon>
+            <ion-label>Opady</ion-label>
+            <ion-text slot="end">{{ weather.current.precipitation }} mm</ion-text>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="flag-outline" slot="start"></ion-icon>
+            <ion-label>Wiatr</ion-label>
+            <ion-text slot="end">{{ weather.current.wind_speed_10m | number:'1.0-1' }} km/h</ion-text>
+          </ion-item>
+        </ion-list>
       </ion-card-content>
     </ion-card>
 
-    <ion-list-header>Prognoza na 7 dni</ion-list-header>
-    <ion-list #forecastList style="opacity: 0">
-      <ion-item *ngFor="let day of weather.dailyForecast">
-        <ion-label>
-          <h2>{{ day.date | date: 'EEEE, MMM d' }}</h2>
-          <p>Max: {{ day.tempMax }}°C / Min: {{ day.tempMin }}°C</p>
-        </ion-label>
-        <app-weather-icon slot="end" [weatherCode]="day.weatherCode"></app-weather-icon>
-      </ion-item>
-    </ion-list>
+    <div *ngIf="weather.dailyForecast.length > 0">
+      <ion-list-header>Prognoza na 7 dni</ion-list-header>
+      <ion-list #forecastList style="opacity: 0">
+        <ng-container *ngFor="let day of weather.dailyForecast">
+          <ion-item button (click)="toggleDetails(day)" [detail]="false" [lines]="day.expanded ? 'none' : 'inset'">
+            <ion-label>
+              <h2>{{ day.date | date: 'EEEE, d MMMM' }}</h2>
+              <p>Max: {{ day.tempMax | number:'1.0-0' }}°C / Min: {{ day.tempMin | number:'1.0-0' }}°C</p>
+            </ion-label>
+            <app-weather-icon slot="end" [weatherCode]="day.weatherCode" [isDailySummary]="true"></app-weather-icon>
+            <ion-icon
+              slot="end"
+              [name]="day.expanded ? 'chevron-up-outline' : 'chevron-down-outline'"
+              class="details-chevron"
+            ></ion-icon>
+          </ion-item>
+          
+          <div *ngIf="day.expanded" class="details-container" [class.details-dark]="isDarkMode">
+            <ion-grid>
+              <ion-row class="ion-justify-content-around">
+                <ion-col size="auto" class="ion-text-center">
+                  <ion-icon name="thermometer-outline"></ion-icon>
+                  <div>Odczuwalna</div>
+                  <div>{{ day.apparentTempMax | number:'1.0-0' }}° / {{ day.apparentTempMin | number:'1.0-0' }}°</div>
+                </ion-col>
+                <ion-col size="auto" class="ion-text-center">
+                  <ion-icon name="rainy-outline"></ion-icon>
+                  <div>Opady</div>
+                  <div>{{ day.precipitationSum | number:'1.0-1' }} mm</div>
+                </ion-col>
+                <ion-col size="auto" class="ion-text-center">
+                  <ion-icon name="flag-outline"></ion-icon>
+                  <div>Wiatr</div>
+                  <div>{{ day.windSpeedMax | number:'1.0-1' }} km/h</div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ng-container>
+      </ion-list>
+    </div>
   </ng-container>
 </ion-content>

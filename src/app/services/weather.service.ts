@@ -10,6 +10,11 @@ export interface WeatherResponse {
 export interface CurrentWeather {
   temperature_2m: number;
   weather_code: number;
+  apparent_temperature: number;
+  relative_humidity_2m: number;
+  precipitation: number;
+  wind_speed_10m: number;
+  is_day: number;
 }
 
 export interface DailyForecast {
@@ -17,6 +22,10 @@ export interface DailyForecast {
   weather_code: number[];
   temperature_2m_max: number[];
   temperature_2m_min: number[];
+  apparent_temperature_max: number[];
+  apparent_temperature_min: number[];
+  precipitation_sum: number[];
+  wind_speed_10m_max: number[];
 }
 
 export interface GeocodingResponse {
@@ -50,9 +59,9 @@ export class WeatherService {
     const params = {
       latitude: latitude.toString(),
       longitude: longitude.toString(),
-      current: 'temperature_2m,weather_code',
-      daily: 'weather_code,temperature_2m_max,temperature_2m_min',
-      timezone: 'Europe/Berlin'
+      current: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,is_day',
+      daily: 'weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,wind_speed_10m_max',
+      timezone: 'auto'
     };
     return this.http.get<WeatherResponse>(this.weatherApiUrl, { params });
   }

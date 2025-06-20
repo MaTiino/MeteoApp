@@ -10,6 +10,11 @@ export interface DailyForecastViewModel {
   tempMax: number;
   tempMin: number;
   weatherCode: number;
+  apparentTempMax: number;
+  apparentTempMin: number;
+  precipitationSum: number;
+  windSpeedMax: number;
+  expanded: boolean;
 }
 
 @Component({
@@ -26,7 +31,8 @@ export class HomePage implements OnInit, OnDestroy {
   public searchResults: GeolocationResult[] = [];
   public weatherData$!: Observable<WeatherResponse & { dailyForecast: DailyForecastViewModel[] }>;
   public loading = true;
-  public locationName = 'Ładowanie...';
+  public cityName = 'Ładowanie...';
+  public isDarkMode = false;
   private cardAnimation!: Animation;
   private listAnimation!: Animation;
   private searchSubject = new Subject<string>();
@@ -39,7 +45,9 @@ export class HomePage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.loadWeather();
+    this.loadWeatherForCurrentLocation();
+    this.setupThemeDetection();
+
     this.searchSubscription = this.searchSubject
       .pipe(
         debounceTime(500),
@@ -58,7 +66,7 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  async loadWeather() {
+  async loadWeatherForCurrentLocation() {
     this.loading = true;
     this.clearSearchResults();
     try {
@@ -71,13 +79,13 @@ export class HomePage implements OnInit, OnDestroy {
       const lon = coordinates.coords.longitude;
 
       this.weatherService.getCityName(lat, lon).subscribe(geo => {
-        this.locationName = geo.city;
+        this.cityName = geo.city;
       });
 
       this.fetchWeather(lat, lon);
     } catch (error) {
       console.error('Error getting location, falling back to default', error);
-      this.locationName = 'Warszawa (domyślnie)';
+      this.cityName = 'Warszawa (domyślnie)';
       this.fetchWeather(52.23, 21.01); // Fallback to Warsaw
     }
   }
@@ -95,7 +103,7 @@ export class HomePage implements OnInit, OnDestroy {
     if (city.admin1) {
       name += ` (${city.admin1})`;
     }
-    this.locationName = `${name}, ${city.country}`;
+    this.cityName = `${name}, ${city.country}`;
     this.fetchWeather(city.latitude, city.longitude);
     this.clearSearchResults();
     this.searchbar.value = '';
@@ -130,21 +138,33 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private animateIn() {
-    this.cardAnimation = this.animationCtrl
-      .create()
-      .addElement(this.weatherCard.nativeElement)
-      .duration(500)
-      .fromTo('opacity', '0', '1')
-      .fromTo('transform', 'translateY(20px)', 'translateY(0)');
+    if (this.weatherCard && this.weatherCard.nativeElement) {
+      this.cardAnimation = this.animationCtrl
+        .create()
+        .addElement(this.weatherCard.nativeElement)
+        .duration(500)
+        .fromTo('opacity', '0', '1')
+        .fromTo('transform', 'translateY(20px)', 'translateY(0)');
+      
+      this.cardAnimation.play();
+    }
 
-    this.listAnimation = this.animationCtrl
-      .create()
-      .addElement(this.forecastList.nativeElement)
-      .duration(500)
-      .fromTo('opacity', '0', '1')
-      .fromTo('transform', 'translateY(20px)', 'translateY(0)');
+    if (this.forecastList && this.forecastList.nativeElement) {
+      this.listAnimation = this.animationCtrl
+        .create()
+        .addElement(this.forecastList.nativeElement)
+        .duration(500)
+        .fromTo('opacity', '0', '1')
+        .fromTo('transform', 'translateY(20px)', 'translateY(0)');
 
-    this.cardAnimation.play().then(() => this.listAnimation.play());
+      this.cardAnimation.play().then(() => {
+        this.listAnimation.play();
+      });
+    }
+  }
+
+  public toggleDetails(day: DailyForecastViewModel): void {
+    day.expanded = !day.expanded;
   }
 
   private transformDailyForecast(daily: DailyForecast): DailyForecastViewModel[] {
@@ -152,7 +172,20 @@ export class HomePage implements OnInit, OnDestroy {
       date,
       tempMax: daily.temperature_2m_max[index],
       tempMin: daily.temperature_2m_min[index],
-      weatherCode: daily.weather_code[index]
+      weatherCode: daily.weather_code[index],
+      apparentTempMax: daily.apparent_temperature_max[index],
+      apparentTempMin: daily.apparent_temperature_min[index],
+      precipitationSum: daily.precipitation_sum[index],
+      windSpeedMax: daily.wind_speed_10m_max[index],
+      expanded: false
     }));
+  }
+
+  private setupThemeDetection() {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    this.isDarkMode = prefersDark.matches;
+    prefersDark.addEventListener('change', (mediaQuery) => {
+      this.isDarkMode = mediaQuery.matches;
+    });
   }
 }

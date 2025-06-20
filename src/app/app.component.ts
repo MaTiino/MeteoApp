@@ -1,28 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { CommonModule, registerLocaleData } from '@angular/common';
+import localePl from '@angular/common/locales/pl';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { Platform } from '@ionic/angular';
+import { IonicModule, Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  standalone: false,
+  standalone: true,
+  imports: [IonicModule, CommonModule],
 })
-export class AppComponent implements OnInit {
-  constructor(private platform: Platform) {}
-
-  ngOnInit() {
+export class AppComponent {
+  constructor(private platform: Platform) {
+    registerLocaleData(localePl);
     this.initializeApp();
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
-      // Set the status bar style to match the app theme
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        this.setStatusBar(e.matches ? Style.Dark : Style.Light);
+      // Listener for theme changes to update status bar
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        this.setStatusBar(event.matches ? Style.Dark : Style.Light);
       });
 
-      // Check the initial theme
+      // Set initial status bar style
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       this.setStatusBar(prefersDark ? Style.Dark : Style.Light);
     });

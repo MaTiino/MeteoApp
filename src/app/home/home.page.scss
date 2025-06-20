@@ -39,3 +39,59 @@ ion-item app-weather-icon {
   font-size: 2rem;
   margin-inline-end: 8px;
 }
+
+.details-chevron {
+  margin-left: 8px;
+}
+
+.details-container {
+  background-color: #ffffff;
+  padding-bottom: 8px;
+  animation: fadeIn 0.3s ease-in-out;
+  border-bottom: 1px solid #e0e0e0;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  ion-icon {
+    font-size: 1.4em;
+    margin-bottom: 4px;
+    color: #757575;
+  }
+
+  div {
+    font-size: 0.8em;
+    color: #212121;
+  }
+}
+
+.details-container.details-dark {
+  background-color: #2c2c2e;
+  border-bottom-color: #404040;
+
+  ion-icon {
+    color: #a0a0a0;
+  }
+
+  div {
+    color: #e0e0e0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ion-content {
+  --background: #f0f0f0;
+}
+
+ion-content.content-dark-mode {
+  --background: #121212;
+}
