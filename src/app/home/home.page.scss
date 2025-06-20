@@ -25,3 +25,17 @@
 #container a {
   text-decoration: none;
 }
+
+.temperature {
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+ion-card-content app-weather-icon {
+  font-size: 3rem;
+}
+
+ion-item app-weather-icon {
+  font-size: 2rem;
+  margin-inline-end: 8px;
+}
