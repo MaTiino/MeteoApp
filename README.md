@@ -58,9 +58,6 @@ MeteoApp to prosta, ale w pełni funkcjonalna aplikacja pogodowa, która pozwala
     ```
 3.  Zsynchronizuj projekt z platformą natywną:
     ```bash
-
-## Autor
-Aplikacja stworzona przez Mateusza Toporka w ramach zaliczenia przedmiotu "Programowanie Aplikacji Wieloplatformowych". 
     ionic capacitor sync android
     ```
 4.  Otwórz projekt w Android Studio:
@@ -68,3 +65,6 @@ Aplikacja stworzona przez Mateusza Toporka w ramach zaliczenia przedmiotu "Progr
     ionic capacitor open android
     ```
 5.  Uruchom aplikację na emulatorze lub podłączonym urządzeniu z poziomu Android Studio. 
+
+## Autor
+Aplikacja stworzona przez Mateusza Toporka w ramach zaliczenia przedmiotu "Programowanie Aplikacji Wieloplatformowych". 
