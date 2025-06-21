@@ -61,7 +61,7 @@ export class WeatherService {
       longitude: longitude.toString(),
       current: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,is_day',
       daily: 'weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,wind_speed_10m_max',
-      timezone: 'auto'
+      timezone: 'Europe/Berlin'
     };
     return this.http.get<WeatherResponse>(this.weatherApiUrl, { params });
   }
